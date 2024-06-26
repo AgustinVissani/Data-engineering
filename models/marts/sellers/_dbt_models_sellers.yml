@@ -1,0 +1,74 @@
+version: 2
+
+sources:
+  - name: dm_sellers
+    description: >
+      Database source for seller data models.
+    database: alumno4_dev_gold_db
+    schema: dbt
+    tables:
+      - name: dm_sellers
+        description: >
+          Seller data aggregated at the session level.
+        columns:
+          - name: seller_id
+            description: >
+              Unique identifier for each seller.
+            tests:
+              - not_null
+              - unique
+          - name: first_name
+            description: >
+              First name of the seller.
+            # tests:
+            #   - not_null
+          - name: last_name
+            description: >
+              Last name of the seller.
+            # tests:
+            #   - not_null
+          - name: fixed_salary
+            description: >
+              Fixed salary of the seller.
+            # tests:
+            #   - not_null
+          - name: commission
+            description: >
+              Commission percentage for the seller.
+            # tests:
+            #   - not_null
+          - name: date_load
+            description: >
+              The date when the data was loaded.
+            # tests:
+            #   - not_null
+          - name: commission_prc
+            description: >
+              Commission percentage for the seller.
+            # tests:
+            #   - not_null
+          - name: date
+            description: >
+              The date when the data was loaded.
+            # tests:
+            #   - not_null
+          - name: total_order_sellers
+            description: >
+              Total number of orders for the seller.
+            # tests:
+            #   - not_null
+          - name: total_sales_seller_usd
+            description: >
+              Total sales amount for the seller.
+            # tests:
+            #   - not_null
+          - name: total_benefits_commission
+            description: >
+              Total benefits from the commission for the seller.
+            # tests:
+            #   - not_null
+          - name: current_salary
+            description: >
+              Current salary of the seller including fixed salary and commission benefits.
+            tests:
+              - not_null

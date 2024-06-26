@@ -1,0 +1,43 @@
+version: 2
+
+models:
+  - name: int_events_per_user
+    description: >
+      Derived table that combines event data with aggregated counts of specific event types per user session.
+    columns:
+      - name: session_id
+        description: The ID representing a user session.
+      - name: user_id
+        description: The ID representing a user.
+      - name: event_id
+        description: The ID of the event.
+      - name: page_url
+        description: The URL of the page associated with the event.
+      - name: event_type_id
+        description: The ID representing the type of the event.
+      - name: product_id
+        description: The ID of the product related to the event.
+      - name: created_at
+        description: The timestamp when the event occurred.
+        tests:
+          - not_null
+      - name: order_id
+        description: The ID of the order associated with the event.
+      - name: _fivetran_synced_utc
+        description: >
+          The timestamp indicating when the event was synced by Fivetran.
+          Used for incremental updates.
+        tests:
+          - not_null
+      - name: checkout_amount
+        description: >
+          Count of 'checkout' events associated with the session.
+      - name: package_shipped_amount
+        description: >
+          Count of 'package_shipped' events associated with the session.
+      - name: add_to_cart_amount
+        description: >
+          Count of 'add_to_cart' events associated with the session.
+      - name: page_view_amount
+        description: >
+          Count of 'page_view' events associated with the session.

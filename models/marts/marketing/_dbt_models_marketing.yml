@@ -1,0 +1,147 @@
+version: 2
+
+sources:
+  - name: _dbt_models_marketing
+    description: >
+      Database source for marketing data models.
+    database: alumno4_dev_gold_db
+    schema: dbt
+    tables:
+      - name: dm_marketing
+        description: >
+          Marketing data aggregated at the user level.
+        columns:
+          - name: user_id
+            data_type: varchar
+            description: >
+              Unique identifier for each user.
+          - name: first_name
+            data_type: varchar
+            description: >
+              First name of the user.
+          - name: last_name
+            data_type: varchar
+            description: >
+              Last name of the user.
+          - name: email
+            data_type: varchar
+            description: >
+              Email address of the user.
+          - name: phone_number
+            data_type: varchar
+            description: >
+              Phone number of the user.
+          - name: created_at_date
+            data_type: date
+            description: >
+              Date when the user record was created.
+          - name: created_at_time_utc
+            data_type: time
+            description: >
+              Time (UTC) when the user record was created.
+          - name: updated_at_date
+            data_type: date
+            description: >
+              Date when the user record was last updated.
+          - name: updated_at_time_utc
+            data_type: time
+            description: >
+              Time (UTC) when the user record was last updated.
+          - name: address
+            data_type: varchar
+            description: >
+              Address of the user.
+          - name: zipcode
+            data_type: number
+            description: >
+              ZIP code of the user's address.
+            tests:
+              - positive_values
+          - name: state
+            data_type: varchar
+            description: >
+              State or province of the user's address.
+          - name: country
+            data_type: varchar
+            description: >
+              Country of the user's address.
+          - name: total_number_orders
+            data_type: number
+            description: >
+              Total number of orders placed by the user.
+            tests:
+              - not_null
+              - positive_values
+          - name: total_order_cost_usd
+            data_type: float
+            description: >
+              Total cost of all orders placed by the user in USD.
+            tests:
+              - positive_values
+          - name: total_shipping_cost_usd
+            data_type: float
+            description: >
+              Total shipping cost incurred by the user in USD.
+            tests:
+              - positive_values
+          - name: total_discount_usd
+            data_type: number
+            description: >
+              Total discount amount applied to the user's orders in USD.
+            tests:
+              - positive_values
+          - name: total_different_product
+            data_type: number
+            description: >
+              Total number of different products purchased by the user.
+            tests:
+              - positive_values
+          - name: total_quantity_product
+            data_type: number
+            description: >
+              Total quantity of products purchased by the user.
+            tests:
+              - positive_values
+
+      - name: dm_budget_performance
+        description: >
+          Aggregated performance data for budget and product sales.
+        columns:
+          - name: budget_id
+            data_type: varchar
+            description: >
+              Identifier for the budget associated with the product sales.
+            tests: 
+              - unique
+          - name: product_id
+            data_type: varchar
+            description: >
+              Identifier for the product sold.
+          - name: product_name
+            data_type: varchar
+            description: >
+              Name of the product.
+          - name: price_usd
+            data_type: float
+            description: >
+              Price of the product in USD.
+          - name: quantity_sold_expected
+            data_type: number
+            description: >
+              Expected quantity of the product to be sold.
+          - name: quantity_sold_actual
+            data_type: number
+            description: >
+              Actual quantity of the product sold.
+          - name: quantity_remaining
+            data_type: number
+            description: >
+              Remaining quantity of the product after sales.
+          - name: total_sales_usd
+            data_type: float
+            description: >
+              Total sales amount generated from the product in USD.
+          - name: earnings_over_estimates
+            data_type: float
+            description: >
+              Difference between actual earnings and estimated earnings in USD.

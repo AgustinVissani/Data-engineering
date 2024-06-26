@@ -1,0 +1,36 @@
+unit_tests:
+  - name: test_is_valid_email
+    description: "Check if email is valid"
+    model: stg_sqlserver__users
+    given:
+      - input: source('_sqlserver_sources', 'users')
+        rows:
+          - { email: ekollaschek2q@tuttocitta.it }
+          - { email: sdivers2p@msu.edu }
+          - { email: wheinecke2l@ebay.com }
+          - { email: noexist@gmail.com } 
+          - { email: fail_email }
+    expect:
+      rows:
+        - { email: ekollaschek2q@tuttocitta.it, is_valid_email_address: true }
+        - { email: sdivers2p@msu.edu, is_valid_email_address: true }
+        - { email: wheinecke2l@ebay.com, is_valid_email_address: true }
+        - { email: noexist@gmail.com, is_valid_email_address: true }
+        - { email: fail_email, is_valid_email_address: false }
+
+  - name: test_is_valid_phone_number
+    description: "Check if phone number is valid"
+    model: stg_sqlserver__users
+    given:
+      - input: source('_sqlserver_sources', 'users')
+        rows:
+          - { phone_number: '831-155-1615' }
+          - { phone_number: '879-706-2066' }
+          - { phone_number: '407-316-0158' }
+          - { phone_number: 'asd-213-ss2s' }
+    expect:
+      rows:
+        - { phone_number: '831-155-1615', is_valid_phone_number: true }
+        - { phone_number: '879-706-2066', is_valid_phone_number: true }
+        - { phone_number: '407-316-0158', is_valid_phone_number: true }
+        - { phone_number: 'asd-213-ss2s', is_valid_phone_number: false }

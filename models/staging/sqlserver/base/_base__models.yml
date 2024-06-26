@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: base_sqlserver__orders
+    description: "This model incrementally loads order data from the source snowflake, normalizes certain fields, and handles schema changes by failing."
+    columns:
+      - name: order_id
+        description: "Unique identifier for the order."
+        tests:
+          - not_null
+          - unique
+      - name: seller_id
+        description: "Unique identifier for the seller."
+      - name: shipping_cost_amount_usd
+        description: "Shipping cost in USD."
+        tests:
+          - not_null
+      - name: address_id
+        description: "Identifier for the address."
+        tests:
+          - not_null
+      - name: shipping_service_name
+        description: "Normalized shipping service name."
+      - name: promo_id
+        description: "Normalized promo ID."
+      - name: created_at_date
+        description: "Date the order was created."
+      - name: created_at_time_utc
+        description: "Time the order was created (UTC)."
+      - name: estimated_delivery_at_date
+        description: "Estimated delivery date."
+      - name: estimated_delivery_at_time_utc
+        description: "Estimated delivery time (UTC)."
+      - name: delivered_at_date
+        description: "Date the order was delivered."
+      - name: delivered_at_time_utc
+        description: "Time the order was delivered (UTC)."
+      - name: order_cost_usd
+        description: "Cost of the order in USD."
+      - name: user_id
+        description: "Identifier for the user."
+      - name: order_total_usd
+        description: "Total order value in USD."
+      - name: tracking_id
+        description: "Tracking identifier for the order."
+      - name: status
+        description: "Current status of the order."
+      - name: _fivetran_deleted
+        description: "Flag indicating if the record was deleted by Fivetran."
+      - name: _fivetran_synced_utc
+        description: "Timestamp of when the record was last synced by Fivetran (UTC)."
+
+  - name: base_sqlserver__promos
+    description: "This model loads promo data from the source snowflake, normalizes the promo names, and handles schema changes by failing."
+    columns:
+      - name: promo_name
+        description: "Normalized name of the promo."
+        tests:
+          - not_null
+          - unique
+      - name: discount_usd
+        description: "Discount value in USD."
+        tests:
+          - not_null
+      - name: status
+        description: "Current status of the promo."
+        tests:
+          - not_null
+      - name: _fivetran_deleted
+        description: "Flag indicating if the record was deleted by Fivetran."
+      - name: _fivetran_synced_utc
+        description: "Timestamp of when the record was last synced by Fivetran (UTC)."

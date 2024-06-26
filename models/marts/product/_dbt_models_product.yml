@@ -1,0 +1,72 @@
+version: 2
+
+sources:
+  - name: _dbt_models_product
+    description: >
+      Database source for product data models.
+    database: alumno4_dev_gold_db
+    schema: dbt
+    tables:
+      - name: dm_product
+        description: >
+          Product data aggregated at the session level.
+        columns:
+          - name: session_id
+            data_type: varchar
+            description: >
+              Unique identifier for each session.
+            tests:
+              - unique
+          - name: user_id
+            data_type: varchar
+            description: >
+              Unique identifier for each user.
+          - name: first_name
+            data_type: varchar
+            description: >
+              First name of the user associated with the session.
+          - name: last_name
+            data_type: varchar
+            description: >
+              Last name of the user associated with the session.
+          - name: email
+            data_type: varchar
+            description: >
+              Email address of the user associated with the session.
+          - name: first_event_time_utc
+            data_type: timestamp_ntz
+            description: >
+              Timestamp of the first event in the session in UTC.
+          - name: last_event_time_utc
+            data_type: timestamp_ntz
+            description: >
+              Timestamp of the last event in the session in UTC.
+          - name: session_length_minutes
+            data_type: number
+            description: >
+              Duration of the session in minutes.
+              - positive_values
+          - name: page_view
+            data_type: number
+            description: >
+              Number of page views in the session.
+            tests:
+              - positive_values
+          - name: add_to_cart
+            data_type: number
+            description: >
+              Number of times products were added to the cart in the session.
+            tests:
+              - positive_values
+          - name: checkout
+            data_type: number
+            description: >
+              Number of checkouts completed in the session.
+            tests:
+              - positive_values
+          - name: package_shipped
+            data_type: number
+            description: >
+              Number of packages shipped in the session.
+            tests:
+              - positive_values

@@ -1,0 +1,496 @@
+version: 2
+
+models:
+  # ADDRESSES
+  - name: stg_sqlserver__addresses
+    description: >
+      This model represents the staging table for addresses data.
+    config:
+      materialized: view
+    columns:
+      - name: ADDRESS_ID
+        description: >
+          Unique identifier for each address record.
+        constraints:
+          - type: not_null  
+        tests:
+          - not_null
+          - unique
+      - name: ZIPCODE
+        description: >
+          Postal code associated with the address.
+        tests:
+          - not_null
+      - name: COUNTRY
+        description: >
+          Country of the address.
+        tests:
+          - not_null
+      - name: ADDRESS
+        description: >
+          Full address including street name and number.
+        tests:
+          - not_null
+      - name: STATE
+        description: >
+          State of the address.
+        tests:
+          - not_null
+      - name: _FIVETRAN_DELETED
+        description: >
+          Indicator if the record has been marked as deleted by Fivetran.
+      - name: _FIVETRAN_SYNCED_UTC
+        data_type: timestamp_tz
+        description: >
+          The timestamp when Fivetran synchronized the data in UTC time zone.
+  
+  # EVENTS
+  - name: stg_sqlserver__events
+    description: >
+      It includes details on event type, user, product, session, and related metadata.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: EVENT_ID
+        data_type: text
+        description: >
+          Unique identifier for each event.
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+          - unique
+      - name: PAGE_URL
+        data_type: text
+        description: >
+          URL of the page where the event occurred.
+        tests:
+          - not_null
+      - name: EVENT_TYPE_ID
+        data_type: text
+        description: >
+          Type of the event id (e.g., checkout, view).
+        tests:
+          - not_null
+      - name: EVENT_TYPE
+        data_type: text
+        description: >
+          Type of the event name (e.g., checkout, view).
+      - name: USER_ID
+        data_type: text
+        description: >
+          Identifier of the user who triggered the event.
+        tests:
+          - not_null
+      - name: PRODUCT_ID
+        data_type: text
+        description: >
+          Identifier of the product related to the event.
+      - name: SESSION_ID
+        data_type: text
+        description: >
+          Identifier of the session in which the event occurred.
+        tests:
+          - not_null
+      - name: CREATED_AT
+        data_type: timestamp
+        description: >
+          Timestamp when the event was created.
+        tests:
+          - not_null
+      - name: ORDER_ID
+        data_type: text
+        description: >
+          Identifier of the order related to the event.
+      - name: _FIVETRAN_DELETED
+        data_type: boolean
+        description: >
+          Indicates if the record was marked as deleted by Fivetran.
+      - name: _FIVETRAN_SYNCED_UTC
+        data_type: timestamp_tz
+        description: >
+          The timestamp when Fivetran synchronized the data in UTC time zone.
+
+  # ORDERS ITEMS
+  - name: stg_sqlserver__order_items
+    description: >
+      It includes details on order ID, product ID, quantity, and related metadata.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: ORDER_ID
+        data_type: text
+        description: >
+          Unique identifier for each order.
+        constraints:
+        - type: not_null
+        tests:
+        - not_null
+      - name: PRODUCT_ID
+        data_type: text
+        description: >
+          Unique identifier for each product.
+        tests:
+          - not_null
+      - name: QUANTITY
+        data_type: integer
+        description: >
+          Quantity of the product in the order.
+        tests:
+          - not_null
+          - positive_values
+      - name: _FIVETRAN_DELETED
+        data_type: boolean
+        description: >
+          Indicates if the record was marked as deleted by Fivetran.
+      - name: _FIVETRAN_SYNCED_UTC
+        data_type: timestamp_tz
+        description: >
+          The timestamp when Fivetran synchronized the data in UTC time zone.
+
+
+  # ORDERS
+  - name: stg_sqlserver__orders
+    description: >
+      It includes details on order ID, shipping, costs, user, and related metadata.
+    config:
+      contract:
+       enforced: true
+    columns:
+      - name: ORDER_ID
+        data_type: text
+        description: >
+          Unique identifier for each order.
+        constraints:
+        - type: not_null
+        tests:
+        - not_null
+        - unique 
+      - name: SELLER_ID
+        data_type: text
+        description: >
+          Unique identifier for each seller.
+      - name: SHIPPING_SERVICE_ID
+        data_type: text
+        description: >
+          Shipping service id.
+        tests:
+        - not_null
+      - name: SHIPPING_COST_AMOUNT_USD
+        data_type: float
+        description: >
+          Cost of shipping the order in USD.
+        tests:
+        - not_null        
+      - name: SHIPPING_SERVICE_NAME
+        data_type: text
+        description: >
+          Shipping service name.
+        tests:
+        - not_null
+      - name: ADDRESS_ID
+        data_type: text
+        description: >
+          Identifier of the address where the order is delivered.
+        tests:
+        - not_null
+      - name: CREATED_AT_DATE
+        data_type: date
+        description: >
+          Date when the order was created.
+      - name: CREATED_AT_TIME_UTC
+        data_type: time
+        description: >
+          Time (UTC) when the order was created.
+      - name: PROMO_ID
+        data_type: text
+        description: >
+          Identifier of the promotion applied to the order.
+        tests:
+        - not_null
+      - name: ESTIMATED_DELIVERY_AT_DATE
+        data_type: date
+        description: >
+          Date when the order is estimated to be delivered.
+      - name: ESTIMATED_DELIVERY_AT_TIME_UTC
+        data_type: time
+        description: >
+          Time (UTC) when the order is estimated to be delivered.
+      - name: DELIVERED_AT_DATE
+        data_type: date
+        description: >
+          Date when the order was delivered.
+      - name: DELIVERED_AT_TIME_UTC
+        data_type: time
+        description: >
+          Time (UTC) when the order was delivered.
+      - name: ORDER_COST_USD
+        data_type: float
+        description: >
+          Cost of the order before shipping and promotions.
+        tests:
+        - not_null
+        - positive_values
+      - name: USER_ID
+        data_type: text
+        description: >
+          Identifier of the user who placed the order.
+        tests:
+        - not_null
+      - name: ORDER_TOTAL_USD
+        data_type: float
+        description: >
+          Total cost of the order after shipping and promotions.
+        tests:
+        - not_null
+        - positive_values
+      - name: TRACKING_ID
+        data_type: text
+        description: >
+          Tracking identifier for the order shipment.
+        tests:
+        - not_null
+      - name: STATUS_ID
+        data_type: text
+        description: >
+          Identifier of the status.
+        tests:
+        - not_null
+      - name: STATUS
+        data_type: text
+        description: >
+          Name of the status.
+        tests:
+        - not_null
+      - name: _FIVETRAN_DELETED
+        data_type: boolean
+        description: >
+          Indicates if the record was marked as deleted by Fivetran.
+      - name: _FIVETRAN_SYNCED_UTC
+        data_type: timestamp_tz
+        description: >
+          The timestamp when the data was synchronized by Fivetran, converted to UTC.
+
+
+  # PROMOS
+  - name: stg_sqlserver__promos
+    description: >
+      It includes details on promotion ID, discount amount, status, and related metadata.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: PROMO_ID
+        data_type: text
+        description: >
+          Unique identifier for each promotion, hashed using md5.
+        tests:
+          - not_null
+          - unique
+        constraints:
+        - type: not_null  
+      - name: PROMO_NAME
+        data_type: text
+        description: >
+          Promo name.
+        tests:
+          - not_null
+      - name: DISCOUNT_USD
+        data_type: int
+        description: >
+          Amount of discount provided by the promotion.
+        tests:
+          - not_null
+          - positive_values
+      - name: STATUS
+        data_type: text
+        description: >
+          Status of the promotion (e.g., active, inactive).
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      - name: STATUS_ID
+        data_type: int
+        description: >
+          Status ID of the promotion (e.g., 1 active, 0 inactive).
+        tests:
+          - not_null
+      - name: _FIVETRAN_DELETED
+        data_type: boolean
+        description: >
+          Indicates if the record was marked as deleted by Fivetran.
+      - name: _FIVETRAN_SYNCED_UTC
+        data_type: timestamp_tz
+        description: >
+          The timestamp when the data was synchronized by Fivetran, converted to UTC.
+
+  # USERS
+  - name: stg_sqlserver__users
+    description: "Silver layer transformation of the users table"
+    columns:
+      - name: USER_ID
+        description: >
+          Unique identifier for the user
+        data_type: varchar
+        tests:
+          - unique
+          - not_null
+        constraints:
+        - type: not_null
+      - name: UPDATED_AT
+        description: >
+          Timestamp of the last update
+        data_type: timestamp with time zone
+      - name: ADDRESS_ID
+        description: >
+          Unique identifier for the address
+        data_type: varchar
+        tests:
+        - not_null
+      - name: LAST_NAME
+        description: >
+          Last name of the user
+        data_type: varchar
+        tests:
+        - not_null
+      - name: PHONE_NUMBER
+        description: >
+          Phone number of the user
+        data_type: varchar
+        tests:
+        - not_null
+      - name: IS_VALID_PHONE_NUMBER
+        description: >
+          Check if the phone number is correct.
+        data_type: boolean
+      - name: TOTAL_ORDERS
+        description: >
+          Total number of orders placed by the user
+        data_type: numeric
+      - name: FIRST_NAME
+        description: >
+          First name of the user
+        data_type: varchar
+        tests:
+        - not_null
+      - name: EMAIL
+        description: >
+          Email address of the user
+        data_type: varchar
+        tests:
+        - not_null
+      - name: CREATED_AT_DATE
+        data_type: timestamp_tz
+        description: "Creation date in year-month-day of a user"
+        tests:
+          - not_null
+      - name: CREATED_AT_TIME_UTC
+        data_type: timestamp_tz
+        description: "Creation date in hour-minute-second of a user"
+        tests:
+          - not_null
+      - name: UPDATED_AT_DATE
+        data_type: timestamp_tz
+        description: "Update date in year-month-day of a user"
+      - name: UPDATED_AT_TIME_UTC
+        data_type: timestamp_tz
+        description: "Update date in hours-minutes-seconds of a user"
+      - name: IS_VALID_EMAIL_ADDRESS
+        description: >
+          Check if the email is correct.
+        data_type: boolean
+      - name: _FIVETRAN_DELETED
+        description: >
+          Flag indicating if the record was deleted in Fivetran
+        data_type: boolean
+      - name: _FIVETRAN_SYNCED_UTC
+        data_type: timestamp_tz
+        description: >
+          The timestamp when Fivetran synchronized the data in UTC time zone.
+  
+  #PRODUCTS
+  - name: stg_sqlserver__product
+    description: "Model for the product table"
+    columns:
+      - name: PRODUCT_ID
+        description: "Unique product identifier"
+        tests:
+          - unique
+          - not_null
+        constraints:
+        - type: not_null
+      - name: PRICE_USD
+        description: "Price of the product in USD"
+        tests:
+          - positive_values            
+      - name: PRODUCT_NAME
+        description: "Product name"
+      - name: INVENTORY
+        description: "Amount of inventory available"
+        tests:
+          - positive_values
+          - not_null 
+      - name: _FIVETRAN_DELETED
+        description: >
+          Flag indicating if the record was deleted in Fivetran
+        data_type: boolean
+      - name: _FIVETRAN_SYNCED_UTC
+        data_type: timestamp_tz
+        description: >
+          The timestamp when Fivetran synchronized the data in UTC time zone.
+      - name: dbt_valid_to
+        data_type: timestamp_tz
+        description: >
+          This field represents the timestamp_tz until which the record was valid. 
+ 
+  #SELLERS
+  - name: stg_sqlserver__sellers
+    description: "Table containing the information of a seller"
+    columns:
+    - name: seller_id
+      data_type: varchar
+      description: "Seller's unique identifier"
+      tests:
+        - unique
+        - not_null
+    - name: first_name
+      data_type: varchar
+      description: "Seller name"
+      tests:
+        - not_null
+    - name: last_name
+      data_type: varchar
+      description: "Seller's last name"
+      tests:
+        - not_null
+    - name: salary
+      data_type: number
+      description: "Salesperson salary value"
+      tests:
+        - not_null
+        - positive_values
+    - name: commission
+      data_type: number
+      description: "Value of the commission percentage that the seller takes for each sale is an integer type"
+      tests:
+        - not_null
+        - positive_values
+    - name: address_id
+      data_type: varchar
+      description: "Seller address identifier"
+      tests:
+        - not_null
+    - name: contract_start_date
+      data_type: timestamp_tz
+      description: "Seller's contract start date"
+    - name: contract_end_date
+      data_type: timestamp_tz
+      description: "End date of the seller's contract"
+    - name: _fivetran_synced_utc
+    - name: dbt_valid_to
+      data_type: timestamp_tz
+      description: >
+        This field represents the timestamp_tz until which the record was valid. 

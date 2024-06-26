@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: stg_google_sheets__budget
+    description: >
+      This model represents the staging table for budget data imported from Google Sheets.
+      It includes details on product quantities and their respective months of reporting.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: BUDGET_ID
+        data_type: text
+        description: >
+          The row number from the Google Sheets document.
+        constraints:
+          - type: not_null
+      - name: PRODUCT_ID
+        data_type: text
+        description: >
+          Product key representing the unique identifier for each product.
+        tests:
+          - not_null
+      - name: QUANTITY_SOLD_EXPECTED
+        data_type: int
+        description: >
+          The quantity of the product reported in the respective month.
+        tests:
+          - not_null
+      - name: month
+        data_type: date
+        description: >
+          The month for which the budget data is reported.
+        tests:
+          - not_null
+      - name: _FIVETRAN_SYNCED_UTC
+        data_type: TIMESTAMP_TZ
+        description: >
+          The timestamp when the data was loaded into the staging table in UTC time zone.
+        tests:
+          - not_null

@@ -1,0 +1,398 @@
+version: 2
+
+models:
+      - name: dim_products
+        description: "Dimension table containing product details"
+        columns:
+          - name: product_id
+            data_type: varchar
+            description: "Unique identifier for each product"
+            tests:
+              - not_null
+              - unique
+          - name: product_name
+            data_type: varchar
+            description: "Name of the product"
+          - name: price_usd
+            data_type: float
+            description: "Price of the product in USD"
+            tests:
+              - positive_values
+          - name: inventory
+            data_type: number
+            description: "Number of items available in stock"
+            tests:
+              - positive_values
+          - name: _fivetran_synced_utc
+            data_type: timestamp_tz
+            description: "Timestamp of the last synchronization with Fivetran"
+
+      - name: dim_users
+        description: "Dimension table containing user details"
+        columns:
+          - name: user_id
+            data_type: varchar
+            description: "Unique identifier for each user"
+            tests:
+              - not_null
+              - unique
+          - name: first_name
+            data_type: varchar
+            description: "User's first name"
+          - name: last_name
+            data_type: varchar
+            description: "User's last name"
+          - name: address_id
+            data_type: varchar
+            description: "Identifier for the user's address"
+          - name: phone_number
+            data_type: varchar
+            description: "User's phone number"
+          - name: email
+            data_type: varchar
+            description: "User's email address"
+          - name: created_at_date
+            data_type: date
+            description: "Date the user account was created"
+          - name: created_at_time_utc
+            data_type: time
+            description: "Time the user account was created in UTC"
+          - name: updated_at_date
+            data_type: date
+            description: "Date the user account was last updated"
+          - name: updated_at_time_utc
+            data_type: time
+            description: "Time the user account was last updated in UTC"
+          - name: _fivetran_synced_utc
+            data_type: timestamp_tz
+            description: "Timestamp of the last synchronization with Fivetran"
+
+      - name: dim_status_orders
+        description: "Dimension table containing status of orders"
+        columns:
+          - name: status_id
+            data_type: varchar
+            description: "Unique identifier for each status"
+            tests:
+              - not_null
+              - unique
+          - name: status
+            data_type: varchar
+            description: "Description of the order status"
+
+      - name: dim_promos
+        description: "Dimension table containing promotional details"
+        columns:
+          - name: promo_id
+            data_type: varchar
+            description: "Unique identifier for each promotion"
+          - name: promo_name
+            data_type: varchar
+            description: "Name of the promotion"
+          - name: discount_usd
+            data_type: number
+            description: "Discount amount in USD"
+            tests:
+              - positive_values
+          - name: status_id
+            data_type: number
+            description: "Identifier for the status of the promotion"
+          - name: status
+            data_type: varchar
+            description: "Description of the promotion status"
+          - name: _fivetran_synced_utc
+            data_type: timestamp_tz
+            description: "Timestamp of the last synchronization with Fivetran"
+
+      - name: fct_orders
+        description: "Fact table containing order details"
+        columns:
+          - name: order_id
+            data_type: varchar
+            description: "Unique identifier for each order"
+            tests:
+              - not_null
+          - name: user_id
+            data_type: varchar
+            description: "Identifier for the user who placed the order"
+          - name: shipping_service_id
+            data_type: varchar
+            description: "Identifier for the shipping service used"
+          - name: shipping_cost_amount_usd
+            data_type: float
+            description: "Shipping cost in USD"
+            tests:
+              - positive_values
+          - name: address_id
+            data_type: varchar
+            description: "Identifier for the shipping address"
+          - name: tracking_id
+            data_type: varchar
+            description: "Tracking identifier for the order"
+          - name: promo_id
+            data_type: varchar
+            description: "Identifier for any promotion applied to the order"
+          - name: STATUS_ID
+            data_type: text
+            description: >
+              Identifier of the status.
+          - name: order_total_usd
+            data_type: float
+            description: "Total order amount in USD"
+            tests:
+              - positive_values
+          - name: product_id
+            data_type: varchar
+            description: "Identifier for the product ordered"
+          - name: quantity
+            data_type: number
+            description: "Quantity of the product ordered"
+            tests:
+              - positive_values
+          - name: created_at_date
+            data_type: date
+            description: "Date the order was created"
+          - name: created_at_time_utc
+            data_type: time
+            description: "Time the order was created in UTC"
+          - name: estimated_delivery_at_date
+            data_type: date
+            description: "Estimated delivery date for the order"
+          - name: estimated_delivery_at_time_utc
+            data_type: time
+            description: "Estimated delivery time for the order in UTC"
+          - name: delivered_at_date
+            data_type: date
+            description: "Actual delivery date of the order"
+          - name: delivered_at_time_utc
+            data_type: time
+            description: "Actual delivery time of the order in UTC"
+          - name: _fivetran_synced_utc
+            data_type: timestamp_tz
+            description: >
+              Timestamp when the address data was synchronized by Fivetran in UTC.
+
+      - name: fct_events
+        description: "Fact table containing user event details"
+        columns:
+          - name: session_id
+            data_type: varchar
+            description: "Unique identifier for each session"
+          - name: seller_id
+            data_type: text
+            description: >
+              Unique identifier for each seller.
+          - name: user_id
+            data_type: varchar
+            description: "Identifier for the user"
+          - name: event_id
+            data_type: varchar
+            description: "Unique identifier for each event"
+          - name: page_url
+            data_type: varchar
+            description: "URL of the page where the event occurred"
+          - name: event_type_id
+            data_type: varchar
+            description: "Identifier for the type of event"
+          - name: product_id
+            data_type: varchar
+            description: "Identifier for the product associated with the event"
+          - name: created_at
+            data_type: timestamp_ntz
+            description: "Timestamp when the event occurred"
+          - name: order_id
+            data_type: varchar
+            description: "Identifier for the order associated with the event"
+          - name: checkout_amount
+            data_type: number
+            description: "Amount for checkout events"
+          - name: package_shipped_amount
+            data_type: number
+            description: "Amount for package shipped events"
+          - name: add_to_cart_amount
+            data_type: number
+            description: "Amount for add to cart events"
+          - name: page_view_amount
+            data_type: number
+            description: "Amount for page view events"
+
+      - name: dim_addresses
+        description: >
+            Table containing information about addresses.
+        columns:
+            - name: address_id
+              data_type: varchar
+              description: >
+                Unique identifier for each address.
+              tests:
+                - not_null
+                - unique
+            - name: zipcode
+              data_type: number
+              description: >
+                ZIP code of the address.
+              tests:
+                - not_null
+            - name: country
+              data_type: varchar
+              description: >
+                Country of the address.
+              tests:
+                - not_null
+            - name: address
+              data_type: varchar
+              description: >
+                Detailed address information.
+              tests:
+                - not_null
+            - name: state
+              data_type: varchar
+              description: >
+                State or province of the address.
+              tests:
+                - not_null
+            - name: _fivetran_synced_utc
+              data_type: timestamp_tz
+              description: >
+                Timestamp when the address data was synchronized by Fivetran in UTC.
+
+      - name: dim_event_types
+        description: >
+          Table containing types of events.
+        columns:
+          - name: event_type_id
+            data_type: varchar
+            description: >
+              Unique identifier for each event type.
+            tests:
+              - not_null
+              - unique
+          - name: event_type
+            data_type: varchar
+            description: >
+              Name or description of the event type.
+            tests:
+              - not_null
+
+      - name: dim_month
+        description: >
+          Table containing information about months.
+        columns:
+          - name: date_day
+            data_type: date
+            description: >
+              Date representing the start of the month.
+          - name: day_of_week
+            data_type: varchar
+            description: >
+              Name of the day of the week for the date.
+            tests:
+              - not_null
+          - name: day_of_month
+            data_type: number
+            description: >
+              Day of the month for the date.
+            tests:
+              - not_null
+          - name: week_of_year
+            data_type: number
+            description: >
+              ISO week number of the year.
+            tests:
+              - not_null
+          - name: month_of_year
+            data_type: number
+            description: >
+              Numeric representation of the month.
+            tests:
+              - not_null
+          - name: year_number
+            data_type: number
+            description: >
+              Year associated with the month.
+            tests:
+              - not_null
+          - name: quarter_of_the_year
+            data_type: number
+            description: >
+              Quarter of the year for the date.
+            tests:
+              - not_null
+
+      - name: dim_time
+        description: >
+          Table containing time-related information.
+        columns:
+          - name: time
+            data_type: time
+            description: >
+              Time of day.
+            tests:
+              - not_null
+              - unique
+          - name: am_or_pm
+            data_type: varchar
+            description: >
+              AM or PM designation for the time.
+            tests:
+              - not_null
+          - name: hour_time
+            data_type: number
+            description: >
+              Hour of the time.
+            tests:
+              - not_null
+
+      - name: dim_shipping
+        description: >
+          Table containing shipping service information.
+        columns:
+          - name: shipping_service_id
+            data_type: varchar
+            description: >
+              Unique identifier for each shipping service.
+            tests:
+              - not_null
+              - unique
+          - name: shipping_service_name
+            data_type: varchar
+            description: >
+              Name or description of the shipping service.
+            tests:
+              - not_null
+          - name: total_shipping_cost_usd
+            data_type: float
+            description: >
+              Total cost of shipping in USD.
+            tests:
+              - not_null
+          - name: total_shipping_service
+            data_type: number
+            description: >
+              Total number of shipping services used.
+            tests:
+              - not_null
+          - name: avg_shipping_service_cost
+            data_type: float
+            description: >
+              Average cost per shipping service.
+            tests:
+              - not_null
+
+      - name: dim_status_promos
+        description: >
+          Table containing status or promotional information.
+        columns:
+          - name: status_id
+            data_type: number
+            description: >
+              Unique identifier for each status or promo.
+            tests:
+              - not_null
+              - unique
+          - name: status
+            data_type: varchar
+            description: >
+              Name or description of the status or promo.
+            tests:
+              - not_null
